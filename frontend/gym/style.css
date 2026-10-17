@@ -1,0 +1,172 @@
+/* ---------------- Body & Fonts ---------------- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    min-height: 100vh;
+}
+
+/* ---------------- Container Glassmorphism ---------------- */
+.container, .container-workout, .container-chatbot {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    max-width: 1000px;
+    margin: 30px auto;
+}
+
+/* ---------------- Titles ---------------- */
+h1, h2, h3 {
+    color: #00f6ff;
+    text-shadow: 0 0 10px #00f6ff;
+    margin-bottom: 20px;
+}
+
+/* ---------------- Forms ---------------- */
+input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 12px;
+    border: none;
+    font-size: 1em;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    transition: 0.3s;
+}
+
+input::placeholder, select option {
+    color: #ddd;
+}
+
+/* ---------------- Buttons ---------------- */
+button {
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0,255,255,0.5);
+}
+
+button:hover {
+    background: #00f6ff;
+    color: #000;
+    box-shadow: 0 0 20px #00f6ff;
+}
+
+/* ---------------- Links & Toggles ---------------- */
+span {
+    color: #00f6ff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+span:hover {
+    color: #00c7cc;
+    text-decoration: underline;
+}
+
+/* ---------------- Cards (Workout Plans / Exercises) ---------------- */
+.plan-card, .exercise-card, .personal-workout div {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin: 10px;
+    flex: 1 1 200px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+
+.plan-card:hover, .exercise-card:hover, .personal-workout div:hover {
+    background: rgba(0,246,255,0.1);
+    box-shadow: 0 0 30px #00f6ff;
+}
+
+/* ---------------- Dashboard Navigation ---------------- */
+.dashboard-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.nav-btn {
+    padding: 20px 30px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1em;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+
+.nav-btn:hover {
+    background: #00f6ff;
+    color: #000;
+    box-shadow: 0 0 30px #00f6ff;
+}
+
+/* ---------------- Logout Button ---------------- */
+.logout-btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    border-radius: 12px;
+    background: #ff0055;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 20px #ff0055;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: #ff33aa;
+    box-shadow: 0 0 30px #ff33aa;
+}
+
+/* ---------------- Chatbot ---------------- */
+.chat-box {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    border-radius: 20px;
+    height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 80%;
+}
+
+.user-message {
+    background: #00f6ff;
+    color: #000;
+    align-self: flex-end;
+}
+
+.bot-message {
+    background: #ff00ff;
+    color: #fff;
+    align-self: flex-start;
+}
+
+/* ---------------- Responsive ---------------- */
+@media(max-width:768px){
+    .plan-cards, .exercise-cards, .dashboard-nav {
+        flex-direction: column;
+        align-items: center;
+    }
+}

@@ -1,0 +1,57 @@
+# Build output & targets
+**/target/
+target/
+**/build/
+build/
+**/dist/
+dist/
+**/out/
+out/
+
+# Node & Frontend dependencies
+**/node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment and secret files
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs
+*.log
+logs/
+**/logs/
+
+# IDE & Editor files
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Eclipse / STS
+.metadata/
+**/.metadata/
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+.apt_generated/
+.factorypath
+
+# Maven wrapper jar if not checked in
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/

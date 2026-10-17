@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wishlist - Gym Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+<style>
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(rgba(0,0,0,.85),rgba(0,0,0,.95)),url('hi.jpg') center/cover fixed;
+    color:#fff;
+    padding:40px 0;
+}
+.container{
+    max-width:900px;
+    margin:auto;
+    text-align:center;
+}
+h1{
+    color:#ff3d81;
+    text-shadow:0 0 25px #ff3d81;
+}
+.list-box{
+    background:rgba(255,255,255,.07);
+    backdrop-filter:blur(16px);
+    padding:30px;
+    border-radius:20px;
+    margin-top:40px;
+    box-shadow:0 0 30px rgba(0,0,0,.6);
+}
+ul{list-style:none;padding:0;}
+li{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 10px;
+    border-bottom:1px solid rgba(255,255,255,.2);
+    font-size:1em;
+}
+button{
+    padding:8px 12px;
+    margin-left:10px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+}
+.remove-btn{background:#ff3d81;color:#fff;}
+.remove-btn:hover{background:#ff6fa2;}
+.back-btn{background:#00f6ff;color:#000;margin-top:20px;}
+.back-btn:hover{background:#00c7cc;}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>❤️ Your Wishlist</h1>
+<div class="list-box">
+<ul id="wishlist-list"></ul>
+<button class="back-btn" onclick="backToStore()">Back to Store</button>
+</div>
+
+<script>
+function renderWishlist(){
+    let wishlist = JSON.parse(localStorage.getItem("gymWishlist")) || [];
+    const ul = document.getElementById("wishlist-list");
+    ul.innerHTML = '';
+
+    if(wishlist.length === 0){
+        ul.innerHTML = "<li>Your wishlist is empty!</li>";
+        return;
+    }
+
+    wishlist.forEach((item,index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `${item.name} <span>₹${item.price}</span>`;
+        const btn = document.createElement("button");
+        btn.textContent = "Remove";
+        btn.className = "remove-btn";
+        btn.onclick = () => removeFromWishlist(index);
+        li.appendChild(btn);
+        ul.appendChild(li);
+    });
+}
+
+function removeFromWishlist(index){
+    let wishlist = JSON.parse(localStorage.getItem("gymWishlist")) || [];
+    wishlist.splice(index,1);
+    localStorage.setItem("gymWishlist", JSON.stringify(wishlist));
+    renderWishlist();
+}
+
+function backToStore(){ window.location.href = "store.html"; }
+
+renderWishlist();
+</script>
+
+</body>
+</html>

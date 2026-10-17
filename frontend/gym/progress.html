@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Web App - Evolution Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- STYLE ---------- */
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
+                url('hi.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    min-height: 100vh;
+    padding: 50px 0;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+}
+
+body.loaded { opacity: 1; }
+
+.container-progress {
+    width: 90%;
+    max-width: 950px;
+    margin: auto;
+    text-align: center;
+    animation: slideUp 1s ease forwards;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.module-title {
+    font-size: 2.8em;
+    margin-bottom: 25px;
+    letter-spacing: 3px;
+    color: #00f6ff;
+    text-shadow: 0 0 15px #00f6ff, 0 0 30px rgba(0,246,255,0.4);
+    text-transform: uppercase;
+}
+
+.section {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(20px);
+    padding: 35px;
+    margin-bottom: 35px;
+    border-radius: 24px;
+    border: 1px solid rgba(0,246,255,0.2);
+    box-shadow: 0 0 40px rgba(0,0,0,0.7);
+    text-align: left;
+}
+
+h2 {
+    color: #ff00ff;
+    text-shadow: 0 0 10px rgba(255,0,255,0.5);
+    text-transform: uppercase;
+    font-size: 1.5em;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* INPUT FORMS */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-grid input, .form-grid select, .form-grid textarea {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+    font-size: 0.95em;
+    font-family: 'Poppins', sans-serif;
+    transition: 0.3s;
+}
+
+.form-grid select option {
+    background: #111;
+    color: #fff;
+}
+
+.form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
+    outline: none;
+    border-color: #00f6ff;
+    box-shadow: 0 0 15px rgba(0,246,255,0.4);
+}
+
+.btn-center {
+    text-align: center;
+    margin-top: 15px;
+}
+
+button {
+    padding: 14px 30px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #00f6ff, #00bcd4);
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.4s;
+    font-family: 'Poppins', sans-serif;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px #00f6ff;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* STATS CHIPS */
+.stats-banner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-chip {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(0, 246, 255, 0.25);
+    border-radius: 16px;
+    padding: 15px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.stat-chip:hover {
+    border-color: #00f6ff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 246, 255, 0.2);
+}
+
+.stat-chip-label {
+    display: block;
+    font-size: 0.72em;
+    color: #ff00ff;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.stat-chip-val {
+    display: block;
+    font-size: 1.3em;
+    color: #00f6ff;
+    font-weight: 800;
+    margin-top: 4px;
+}
+
+/* WORKOUT LOG ITEMS */
+#workout-log {
+    margin-top: 25px;
+}
+
+.workout-item {
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    background: rgba(255,255,255,0.04);
+    border-left: 4px solid #00f6ff;
+    border-radius: 12px;
+    list-style: none;
+    transition: 0.3s;
+}
+
+.workout-item:hover {
+    background: rgba(255,255,255,0.07);
+    border-left-color: #ff00ff;
+    transform: translateX(4px);
+}
+
+.type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.72em;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 6px;
+    background: rgba(255, 0, 255, 0.15);
+    color: #ff00ff;
+    border: 1px solid rgba(255, 0, 255, 0.4);
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+canvas {
+    margin-top: 20px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+    width: 100% !important;
+}
+
+/* LOADER */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle, #0f2027, #000);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader-ring {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 6px solid rgba(255,255,255,0.1);
+    border-top: 6px solid #00f6ff;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 35px #00f6ff;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="loader-ring"></div>
+    <h3 style="margin-top: 20px; color:#00f6ff; letter-spacing: 3px;">GYM HUB</h3>
+    <p style="color:#ff00ff; letter-spacing: 2px; text-transform: uppercase;">Evolution Tracker</p>
+</div>
+
+<div class="container-progress">
+    <div style="text-align: left; margin-bottom: 20px;">
+        <a href="dashboard.html" style="display: inline-block; color: #00f6ff; text-decoration: none; font-size: 0.9em; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid rgba(0,246,255,0.3); padding: 8px 16px; border-radius: 12px; background: rgba(0,246,255,0.05); transition: 0.3s;">&larr; Command Dashboard</a>
+    </div>
+    <h1 class="module-title">Progress Tracker</h1>
+
+    <!-- WORKOUT LOG & STATS SECTION -->
+    <div class="section">
+        <h2>Workout Logging & Statistics</h2>
+
+        <!-- REAL WORKOUT STATS BANNER -->
+        <div class="stats-banner" id="stats-banner">
+            <div class="stat-chip">
+                <span class="stat-chip-label">TOTAL WORKOUTS</span>
+                <span class="stat-chip-val" id="chip-total-workouts">0</span>
+            </div>
+            <div class="stat-chip">
+                <span class="stat-chip-label">TOTAL MINUTES</span>
+                <span class="stat-chip-val" id="chip-total-minutes">0 m</span>
+            </div>
+            <div class="stat-chip">
+                <span class="stat-chip-label">CALORIES BURNED</span>
+                <span class="stat-chip-val" id="chip-total-calories">0 kcal</span>
+            </div>
+            <div class="stat-chip">
+                <span class="stat-chip-label">AVG DURATION</span>
+                <span class="stat-chip-val" id="chip-avg-duration">0 m</span>
+            </div>
+        </div>
+
+        <h3 style="color:#00f6ff; font-size:1.1em; letter-spacing:1px; margin-bottom:15px; text-transform:uppercase;">Record Training Session</h3>
+        <div class="form-grid">
+            <input type="text" id="workout-name" placeholder="Workout Name (e.g., Combat Protocol)" value="Combat Protocol">
+            <input type="text" id="exercise-name" placeholder="Exercise / Technique (e.g., Squats) *" required>
+            <select id="exercise-type">
+                <option value="Strength">Strength</option>
+                <option value="Cardio">Cardio</option>
+                <option value="HIIT">HIIT</option>
+                <option value="Flexibility">Flexibility</option>
+                <option value="Calisthenics">Calisthenics</option>
+                <option value="Combat Training">Combat Training</option>
+            </select>
+            <input type="number" id="duration" placeholder="Duration (min) *" min="1" max="1440" required>
+            <input type="number" id="calories" placeholder="Calories Burned (kcal)" min="0" max="10000">
+            <input type="number" id="sets" placeholder="Sets Completed (optional)" min="1" max="100">
+            <input type="number" id="reps" placeholder="Reps Per Set (optional)" min="1" max="1000">
+            <input type="date" id="workout-date" placeholder="Workout Date">
+        </div>
+        <div class="form-grid" style="grid-template-columns: 1fr;">
+            <input type="text" id="notes" placeholder="Optional Notes (e.g., Clean reps, added 5kg on last set)" maxlength="500">
+        </div>
+        <div class="btn-center">
+            <button id="btn-log-workout" onclick="logWorkout()">Add to Workout</button>
+            <div id="workout-msg" style="margin-top: 14px; font-weight: 600; min-height: 20px; text-align: center;"></div>
+        </div>
+
+        <h3 style="color:#ff00ff; font-size:1.1em; letter-spacing:1px; margin-top:35px; margin-bottom:15px; text-transform:uppercase;">Workout History</h3>
+        <div id="workout-log"></div>
+    </div>
+
+    <!-- BODY MEASUREMENTS SECTION -->
+    <div class="section">
+        <h2>Body Measurements</h2>
+        <div class="form-grid">
+            <input type="number" id="weight" placeholder="Current Body Mass (kg) *" step="0.1" min="20" max="500" required>
+            <input type="number" id="chest" placeholder="Chest (cm, optional)" step="0.1" min="20" max="300">
+            <input type="date" id="measurement-date" placeholder="Measurement Date">
+        </div>
+        <div class="btn-center">
+            <button id="btn-log-measurement" onclick="logMeasurements()">Add measurements</button>
+            <div id="measurement-msg" style="margin-top: 14px; font-weight: 600; min-height: 20px; text-align: center;"></div>
+        </div>
+    </div>
+
+    <!-- EVOLUTION CHARTS SECTION -->
+    <div class="section">
+        <h2>Progress Charts</h2>
+        <div id="chart-empty-msg" style="display:none; color:#888; font-style:italic; text-align:center; margin-bottom:15px; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+            No measurement records found. Record your initial biometrics above to begin plotting evolution.
+        </div>
+        <div id="charts-wrapper">
+            <canvas id="weightChart" height="180"></canvas>
+            <canvas id="chestChart" height="180"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Authentication check on load
+if (!window.GymApi || !GymApi.isAuthenticated()) {
+    window.location.href = 'index.html';
+}
+
+let workoutLogs = [];
+let labels = [];
+let weightData = [];
+let chestData = [];
+
+// Default date inputs to today (YYYY-MM-DD)
+const todayStr = new Date().toISOString().split('T')[0];
+document.getElementById('workout-date').value = todayStr;
+document.getElementById('workout-date').max = todayStr;
+document.getElementById('measurement-date').value = todayStr;
+document.getElementById('measurement-date').max = todayStr;
+
+// Chart setup
+const chartOptions = {
+    responsive: true,
+    plugins: {
+        legend: {
+            labels: {
+                color: '#00f6ff',
+                font: { family: 'Poppins', size: 12 }
+            }
+        }
+    },
+    scales: {
+        x: { ticks: { color: '#ccc' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#ccc' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+    }
+};
+
+let weightChart = new Chart(document.getElementById('weightChart').getContext('2d'), {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Mass Evolution (kg)',
+            data: weightData,
+            borderColor: '#00f6ff',
+            backgroundColor: 'rgba(0,246,255,0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 5,
+            pointBackgroundColor: '#00f6ff'
+        }]
+    },
+    options: chartOptions
+});
+
+let chestChart = new Chart(document.getElementById('chestChart').getContext('2d'), {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Chest Expansion (cm)',
+            data: chestData,
+            borderColor: '#ff00ff',
+            backgroundColor: 'rgba(255,0,255,0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 5,
+            pointBackgroundColor: '#ff00ff'
+        }]
+    },
+    options: chartOptions
+});
+
+function updateCharts() {
+    weightChart.data.labels = labels;
+    weightChart.data.datasets[0].data = weightData;
+    weightChart.update();
+
+    chestChart.data.labels = labels;
+    chestChart.data.datasets[0].data = chestData;
+    chestChart.update();
+
+    const emptyNotice = document.getElementById('chart-empty-msg');
+    const chartsWrapper = document.getElementById('charts-wrapper');
+    if (labels.length === 0) {
+        emptyNotice.style.display = 'block';
+        chartsWrapper.style.display = 'none';
+    } else {
+        emptyNotice.style.display = 'none';
+        chartsWrapper.style.display = 'block';
+    }
+}
+
+function updateWorkoutStatsChips() {
+    const totalWorkouts = workoutLogs.length;
+    let totalMinutes = 0;
+    let totalCalories = 0;
+
+    workoutLogs.forEach(w => {
+        if (w.durationMinutes) totalMinutes += Number(w.durationMinutes);
+        if (w.caloriesBurned) totalCalories += Number(w.caloriesBurned);
+    });
+
+    const avgDuration = totalWorkouts > 0 ? (totalMinutes / totalWorkouts).toFixed(1) : 0;
+
+    document.getElementById('chip-total-workouts').textContent = totalWorkouts;
+    document.getElementById('chip-total-minutes').textContent = `${totalMinutes} m`;
+    document.getElementById('chip-total-calories').textContent = `${totalCalories} kcal`;
+    document.getElementById('chip-avg-duration').textContent = `${avgDuration} m`;
+}
+
+function displayWorkoutLog() {
+    const container = document.getElementById('workout-log');
+    if (!workoutLogs || workoutLogs.length === 0) {
+        container.innerHTML = '<div style="color: #888; font-style: italic; text-align: center; margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">No workouts logged yet. Record your training above!</div>';
+        return;
+    }
+
+    let html = '<ul style="list-style: none; padding: 0; margin: 0;">';
+    workoutLogs.forEach((log) => {
+        const dateStr = log.workoutDate || (log.createdAt ? log.createdAt.split('T')[0] : 'Recorded');
+        const typeBadge = `<span class="type-badge">${log.exerciseType || 'General'}</span>`;
+        const setsReps = (log.sets && log.reps) ? `${log.sets} Sets x ${log.reps} Reps &bull; ` : '';
+        const caloriesStr = log.caloriesBurned ? ` &bull; <span style="color:#ff00ff;">${log.caloriesBurned} kcal</span>` : '';
+        const weightStr = log.weightUsed ? ` &bull; ${log.weightUsed} kg load` : '';
+        const notesStr = log.notes ? `<div style="margin-top:6px; color:#aaa; font-size:0.85em; font-style:italic;">Notes: ${log.notes}</div>` : '';
+
+        html += `
+        <li class="workout-item">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:5px;">
+                <span style="font-size:1.05em; font-weight:700; color:#fff;">
+                    ${log.exerciseName} ${typeBadge}
+                </span>
+                <span style="color:#00f6ff; font-size:0.85em; font-weight:600;">${dateStr}</span>
+            </div>
+            <div style="margin-top:6px; color:#ccc; font-size:0.9em;">
+                ${log.workoutName ? `<strong style="color:#00f6ff;">[${log.workoutName}]</strong> ` : ''}
+                ${setsReps}<strong>${log.durationMinutes}</strong> min duration${caloriesStr}${weightStr}
+            </div>
+            ${notesStr}
+        </li>`;
+    });
+    html += '</ul>';
+    container.innerHTML = html;
+}
+
+// Fetch initial data from backend
+async function loadUserData() {
+    try {
+        // Load Workouts
+        const logs = await GymApi.getWorkoutLogs();
+        if (Array.isArray(logs)) {
+            workoutLogs = logs;
+            displayWorkoutLog();
+            updateWorkoutStatsChips();
+        }
+    } catch (err) {
+        console.error('Failed to load workout logs:', err);
+        document.getElementById('workout-log').innerHTML = `<p style="color: #ff0055;">Unable to load workout records: ${err.message || 'Server error'}</p>`;
+    }
+
+    try {
+        // Load Measurements
+        const measurements = await GymApi.getMeasurements();
+        if (Array.isArray(measurements) && measurements.length > 0) {
+            labels = [];
+            weightData = [];
+            chestData = [];
+            measurements.forEach(m => {
+                labels.push(m.measurementDate || 'Entry');
+                weightData.push(m.weight != null ? m.weight : null);
+                chestData.push(m.chest != null ? m.chest : null);
+            });
+            updateCharts();
+        } else {
+            labels = [];
+            weightData = [];
+            chestData = [];
+            updateCharts();
+        }
+    } catch (err) {
+        console.error('Failed to load measurements:', err);
+    }
+}
+
+async function logWorkout() {
+    const workoutNameInput = document.getElementById('workout-name');
+    const nameInput = document.getElementById('exercise-name');
+    const typeSelect = document.getElementById('exercise-type');
+    const durationInput = document.getElementById('duration');
+    const caloriesInput = document.getElementById('calories');
+    const setsInput = document.getElementById('sets');
+    const repsInput = document.getElementById('reps');
+    const dateInput = document.getElementById('workout-date');
+    const notesInput = document.getElementById('notes');
+    const msgDiv = document.getElementById('workout-msg');
+    const btn = document.getElementById('btn-log-workout');
+
+    const workoutName = workoutNameInput.value.trim() || 'Combat Protocol';
+    const exerciseName = nameInput.value.trim();
+    const exerciseType = typeSelect.value;
+    const durationMinutes = parseInt(durationInput.value, 10);
+    const caloriesBurned = caloriesInput.value ? parseInt(caloriesInput.value, 10) : null;
+    const sets = setsInput.value ? parseInt(setsInput.value, 10) : null;
+    const reps = repsInput.value ? parseInt(repsInput.value, 10) : null;
+    const workoutDate = dateInput.value || todayStr;
+    const notes = notesInput.value.trim() || null;
+
+    msgDiv.textContent = '';
+
+    // Validation
+    if (!exerciseName) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = '[ERROR]: Technique/Exercise name is required.';
+        return;
+    }
+    if (isNaN(durationMinutes) || durationMinutes < 1 || durationMinutes > 1440) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = '[ERROR]: Intensity duration must be between 1 and 1440 minutes.';
+        return;
+    }
+    if (sets !== null && (isNaN(sets) || sets < 1 || sets > 100)) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = '[ERROR]: Sets must be between 1 and 100 if specified.';
+        return;
+    }
+    if (reps !== null && (isNaN(reps) || reps < 1 || reps > 1000)) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = '[ERROR]: Reps must be between 1 and 1000 if specified.';
+        return;
+    }
+    if (caloriesBurned !== null && (isNaN(caloriesBurned) || caloriesBurned < 0 || caloriesBurned > 10000)) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = '[ERROR]: Calories burned must be between 0 and 10000 kcal.';
+        return;
+    }
+    if (workoutDate > todayStr) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = '[ERROR]: Workout date cannot be in the future.';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Recording...';
+
+    try {
+        const payload = {
+            workoutName: workoutName,
+            exerciseName: exerciseName,
+            exerciseType: exerciseType,
+            durationMinutes: durationMinutes,
+            caloriesBurned: caloriesBurned,
+            sets: sets,
+            reps: reps,
+            workoutDate: workoutDate,
+            notes: notes
+        };
+
+        const savedLog = await GymApi.logWorkout(payload);
+        if (savedLog) {
+            workoutLogs.unshift(savedLog);
+            displayWorkoutLog();
+            updateWorkoutStatsChips();
+
+            nameInput.value = '';
+            durationInput.value = '';
+            caloriesInput.value = '';
+            setsInput.value = '';
+            repsInput.value = '';
+            notesInput.value = '';
+            dateInput.value = todayStr;
+
+            msgDiv.style.color = '#00f6ff';
+            msgDiv.textContent = `[SYSTEM]: Protocol "${savedLog.exerciseName}" logged successfully!`;
+            setTimeout(() => { msgDiv.textContent = ''; }, 4000);
+        }
+    } catch (err) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = `[ERROR]: ${err.message || 'Failed to record workout'}`;
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Add to Workout';
+    }
+}
+
+async function logMeasurements() {
+    const weightInput = document.getElementById('weight');
+    const chestInput = document.getElementById('chest');
+    const dateInput = document.getElementById('measurement-date');
+    const msgDiv = document.getElementById('measurement-msg');
+    const btn = document.getElementById('btn-log-measurement');
+
+    const weightVal = parseFloat(weightInput.value);
+    const chestVal = chestInput.value ? parseFloat(chestInput.value) : null;
+    const measurementDate = dateInput.value || todayStr;
+
+    msgDiv.textContent = '';
+
+    // Validation
+    if (isNaN(weightVal) || weightVal < 20 || weightVal > 500) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = '[ERROR]: Body mass must be a reasonable value between 20 and 500 kg.';
+        return;
+    }
+    if (chestVal !== null && (isNaN(chestVal) || chestVal < 20 || chestVal > 300)) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = '[ERROR]: Chest measurement must be between 20 and 300 cm if provided.';
+        return;
+    }
+    if (measurementDate > todayStr) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = '[ERROR]: Measurement date cannot be in the future.';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Updating...';
+
+    try {
+        const payload = {
+            weight: weightVal,
+            chest: chestVal,
+            measurementDate: measurementDate
+        };
+
+        const saved = await GymApi.logMeasurement(payload);
+        if (saved) {
+            labels.push(saved.measurementDate || todayStr);
+            weightData.push(saved.weight);
+            chestData.push(saved.chest != null ? saved.chest : null);
+
+            updateCharts();
+
+            weightInput.value = '';
+            chestInput.value = '';
+            dateInput.value = todayStr;
+
+            msgDiv.style.color = '#00f6ff';
+            msgDiv.textContent = '[SYSTEM]: Biometrics synchronized and charts updated!';
+            setTimeout(() => { msgDiv.textContent = ''; }, 4000);
+        }
+    } catch (err) {
+        msgDiv.style.color = '#ff0055';
+        msgDiv.textContent = `[ERROR]: ${err.message || 'Failed to record measurement'}`;
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Add measurements';
+    }
+}
+
+// Initial bootstrap
+loadUserData();
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const loader = document.getElementById("loader");
+        if (loader) loader.style.display = "none";
+        document.body.classList.add("loaded");
+    }, 800);
+});
+</script>
+</body>
+</html>

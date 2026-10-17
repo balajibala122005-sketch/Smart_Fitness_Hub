@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Order Successful</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{ box-sizing:border-box; }
+
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+
+    background:
+        linear-gradient(rgba(0,0,0,.8),rgba(0,0,0,.9)),
+        url('hi.jpg') no-repeat center center fixed;
+    background-size:cover;
+
+    color:#fff;
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    opacity:0;
+    animation:fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn{ to{ opacity:1; } }
+
+/* SUCCESS CARD */
+.box{
+    width:340px;
+    padding:45px 35px;
+    border-radius:28px;
+    text-align:center;
+
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(0,246,255,0.25);
+
+    box-shadow:
+        0 0 35px rgba(0,0,0,.8),
+        inset 0 0 15px rgba(255,255,255,.05);
+
+    animation:popUp .8s ease forwards;
+}
+
+@keyframes popUp{
+    from{ transform:scale(.85); opacity:0; }
+    to{ transform:scale(1); opacity:1; }
+}
+
+/* CHECK ANIMATION */
+.check{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    margin:0 auto 25px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border:4px solid #00f6ff;
+    box-shadow:0 0 30px #00f6ff;
+
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    50%{ box-shadow:0 0 60px #00f6ff; }
+}
+
+.check span{
+    font-size:3em;
+    color:#00f6ff;
+}
+
+/* TITLE */
+h1{
+    letter-spacing:2px;
+    color:#00f6ff;
+    text-shadow:0 0 15px #00f6ff;
+    margin-bottom:10px;
+}
+
+p{
+    color:#ccc;
+    margin-bottom:30px;
+    font-size:.95em;
+}
+
+/* BUTTON */
+button{
+    padding:14px 30px;
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+
+    font-size:1em;
+    font-weight:700;
+    letter-spacing:1px;
+
+    background:linear-gradient(135deg,#00f6ff,#00bcd4);
+    color:#000;
+
+    box-shadow:0 0 25px rgba(0,246,255,.7);
+    transition:.35s ease;
+}
+
+button:hover{
+    transform:scale(1.1);
+    box-shadow:0 0 45px rgba(0,246,255,1);
+}
+
+/* RESPONSIVE */
+@media(max-width:480px){
+    .box{ width:90%; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <div class="check"><span>✓</span></div>
+    <h1>Order Successful</h1>
+    <p>Your gym products will arrive soon. Stay strong 💪</p>
+    <button onclick="goBack()">Back to Store</button>
+</div>
+
+<script>
+localStorage.removeItem("gymCart");
+
+function goBack(){
+    window.location.href = "store.html";
+}
+</script>
+
+</body>
+</html>

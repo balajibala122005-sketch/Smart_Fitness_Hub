@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fitness Chatbot</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; }
+body {
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background: linear-gradient(rgba(0,0,0,.85),rgba(0,0,0,.95)),url('hi.jpg') center/cover fixed;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    padding:40px 0;
+    min-height:100vh;
+    opacity:0;
+    transition: opacity 1.2s ease;
+}
+body.loaded { opacity:1; }
+
+.container-chatbot {
+    width: 100%;
+    max-width:700px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    animation: slideUp 1s ease forwards;
+    padding: 0 20px;
+}
+@keyframes slideUp { from { transform: translateY(30px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+
+.module-title {
+    font-size:2.6em;
+    letter-spacing:3px;
+    color:#00f6ff;
+    text-shadow:0 0 20px #00f6ff,0 0 40px rgba(0,246,255,0.3);
+    margin-bottom:30px;
+    text-transform:uppercase;
+    text-align:center;
+}
+
+.chat-box {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(25px);
+    width:100%;
+    height:450px;
+    border-radius:26px;
+    padding:25px;
+    overflow-y:auto;
+    border:1px solid rgba(0,246,255,0.2);
+    box-shadow:0 0 50px rgba(0,0,0,0.8);
+    display:flex;
+    flex-direction:column;
+}
+
+.message {
+    max-width:85%;
+    padding:14px 20px;
+    margin:10px 0;
+    border-radius:20px;
+    font-size:0.95em;
+    line-height:1.5;
+    animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+
+@keyframes popIn { from { transform:scale(0.8); opacity:0; } to { transform:scale(1); opacity:1; } }
+
+.user-message {
+    background: rgba(0,246,255,0.15);
+    color: #00f6ff;
+    align-self:flex-end;
+    border:1px solid rgba(0,246,255,0.3);
+    border-bottom-right-radius:4px;
+}
+
+.bot-message {
+    background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(255,0,255,0.1));
+    color: #fff;
+    align-self:flex-start;
+    border:1px solid rgba(255,0,255,0.4);
+    border-bottom-left-radius:4px;
+}
+
+.chat-input {
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+    width:100%;
+}
+
+.chat-input input {
+    flex:1;
+    padding:15px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.4);
+    color:#fff;
+    font-size:1em;
+}
+
+.chat-input input:focus {
+    outline:none;
+    border-color:#00f6ff;
+    box-shadow:0 0 20px rgba(0,246,255,0.4);
+}
+
+.chat-input button {
+    padding:15px 30px;
+    border-radius:16px;
+    border:none;
+    cursor:pointer;
+    background: linear-gradient(135deg,#00f6ff,#00bcd4);
+    color:#000;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.chat-input button:hover {
+    transform: scale(1.05);
+    box-shadow:0 0 25px #00f6ff;
+}
+
+#loader {
+    position:fixed;
+    inset:0;
+    background:radial-gradient(circle,#0f2027,#000);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+.loader-ring {
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    border:5px solid rgba(255,255,255,0.1);
+    border-top:5px solid #ff00ff;
+    animation:spin 1s linear infinite;
+}
+@keyframes spin { 100%{ transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="loader-ring"></div>
+    <h3>TACTICAL SYNC</h3>
+    <p>Connecting to Fitness Core...</p>
+</div>
+
+<div class="container-chatbot">
+    <h1 class="module-title">AI Fitness Chatbot</h1>
+    <div id="chat-box" class="chat-box">
+        <div class="message bot-message">How can I assist you today? Ask about Diet, Workout, Injury, Recovery, Supplements, or Protocols.</div>
+    </div>
+
+    <div class="chat-input">
+        <input type="text" id="user-input" placeholder="Type your question...">
+        <button id="send-btn">Send</button>
+    </div>
+</div>
+
+<script>
+const chatBox = document.getElementById('chat-box');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+
+function appendMessage(message,sender){
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', sender==='user'?'user-message':'bot-message');
+    msgDiv.textContent = message;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Advanced bot logic
+function botReply(input){
+    input = input.toLowerCase();
+    let response = "I can provide guidance on Diet, Workout, Injuries, Recovery, Supplements, and Training Protocols.";
+
+    // Diet
+    if(input.includes("diet") || input.includes("calorie") || input.includes("eat") || input.includes("nutrition")){
+        response = "🍗 [Diet]: For muscle gain, eat high-protein foods like chicken, eggs, whey. For fat loss, maintain a caloric deficit with vegetables and fiber.";
+    }
+    // Workout
+    else if(input.includes("workout") || input.includes("exercise") || input.includes("training")){
+        response = "🏋️ [Workout]: Start with 3-4 days/week of full-body compound movements. Include squats, deadlifts, presses, and pull-ups. Adjust intensity weekly.";
+    }
+    // Injury
+    else if(input.includes("pain") || input.includes("injury") || input.includes("knee") || input.includes("shoulder")){
+        if(input.includes("knee")) response = "⚠️ [Injury Advice]: Avoid heavy squats or lunges. Ice and rest recommended for 2-3 days.";
+        else if(input.includes("shoulder")) response = "⚠️ [Injury Advice]: Avoid overhead pressing. Do mobility and rotator cuff exercises.";
+        else response = "⚠️ [Injury Advice]: Rest, hydrate, and consult a professional if pain persists.";
+    }
+    // Recovery
+    else if(input.includes("rest") || input.includes("recovery") || input.includes("sleep")){
+        response = "💤 [Recovery]: Take 1-2 rest days per week. Ensure 7-8 hours of sleep, stay hydrated, and do light stretching.";
+    }
+    // Supplements
+    else if(input.includes("supplement") || input.includes("protein") || input.includes("creatine") || input.includes("multivitamin")){
+        response = "💊 [Supplements]: Whey protein, Creatine, Multivitamins, Omega-3s. Use as per your goal and diet plan.";
+    }
+    // Protocols
+    else if(input.includes("protocol") || input.includes("plan") || input.includes("routine")){
+        response = "📋 [Protocol]: Warm-up 10 min, strength training 45 min, cardio 20 min. Track your sets, reps, and progressive overload weekly.";
+    }
+    // Greeting
+    else if(input.includes("hi") || input.includes("hello")){
+        response = "Hello! Ask me about Diet, Workout, Injuries, Recovery, Supplements, or Protocols.";
+    }
+
+    appendMessage(response,'bot');
+}
+
+function sendMessage(){
+    const input = userInput.value.trim();
+    if(!input) return;
+    appendMessage(input,'user');
+    userInput.value = "";
+    setTimeout(()=>botReply(input),500);
+}
+
+sendBtn.addEventListener('click', sendMessage);
+userInput.addEventListener('keypress',(e)=>{ if(e.key==='Enter') sendMessage(); });
+
+window.addEventListener("load",()=>{
+    setTimeout(()=>{
+        document.getElementById("loader").style.display="none";
+        document.body.classList.add("loaded");
+    },1200);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hotel Ticket Booking</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url("bg5.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: sans-serif;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 15px 30px;
+        }
+
+        .d1 {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #bbb;
+            font-size: 16px;
+            padding: 8px 12px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #fff;
+        }
+
+        .ce {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 80px;
+        }
+
+        .ce h1 {
+            color: white;
+            font-size: 40px;
+            text-align: center;
+        }
+
+        .form-container {
+            width: 350px;
+            margin: 30px auto;
+            padding: 25px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+        }
+
+        .form-container h3 {
+            text-align: center;
+            font-size: 25px;
+        }
+
+        .form-container label {
+            display: inline-block;
+            width: 80px;
+            margin-bottom: 10px;
+        }
+
+        .form-container input {
+            padding: 8px;
+            width: 220px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="d1">
+            Hotel Ticket Booking
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+
+    </nav>
+
+    <section class="ce">
+        <h1>Welcome Ticket Booking</h1>
+    </section>
+
+    <section class="form-container">
+
+        <form action="" method="post">
+
+            <h3>Register</h3>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Enter your Name">
+            <br>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" placeholder="Enter your Age">
+            <br>
+
+            <label for="dob">DOB:</label>
+            <input type="date" id="dob">
+            <br>
+
+            <label for="mobile">Mobile:</label>
+            <input type="tel" id="mobile" placeholder="Mobile no">
+
+        </form>
+
+    </section>
+    <footer class="footer">
+
+        <div class="footer-content">
+
+            <!-- Left Side -->
+            <div class="footer-left">
+
+                <h3>About Ticket Booking</h3>
+
+                <p>
+                    Book your tickets easily and quickly with our
+                    simple ticket booking service. We provide a
+                    convenient and user-friendly booking experience.
+                </p>
+
+            </div>
+
+
+            <!-- Right Side -->
+            <div class="footer-right">
+
+                <h3>Quick Links</h3>
+
+                <ul class="quick-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <!-- Copyright -->
+        <div class="copyright">
+
+            <p>
+                All Rights Reserved &copy; 2026 Ticket Booking
+            </p>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>

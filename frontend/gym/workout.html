@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Web App - Combat Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ... Inheriting the aesthetic from your previous module ... */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
+                url('hi.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    padding: 20px;
+}
+
+.container-workout {
+    max-width: 1000px;
+    margin: auto;
+    animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.module-title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #00f6ff;
+    text-shadow: 0 0 20px #00f6ff, 0 0 40px rgba(0,246,255,0.4);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+h2 {
+    color: #ff00ff;
+    margin-top: 40px;
+    text-shadow: 0 0 10px rgba(255,0,255,0.5);
+    border-left: 5px solid #ff00ff;
+    padding-left: 15px;
+}
+
+.plan-cards, .exercise-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.plan-card, .exercise-card {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    border-radius: 18px;
+    width: 280px;
+    text-align: center;
+    border: 1px solid rgba(0,246,255,0.2);
+    transition: 0.3s;
+}
+
+.plan-card:hover {
+    border-color: #00f6ff;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,246,255,0.2);
+}
+
+.plan-card.active-plan {
+    border-color: #ff00ff;
+    box-shadow: 0 0 25px rgba(255, 0, 255, 0.5);
+    background: rgba(255, 0, 255, 0.08);
+}
+.plan-card.active-plan h3 {
+    color: #ff00ff;
+}
+.plan-card.active-plan button {
+    background: linear-gradient(135deg, #ff00ff, #e00070);
+    color: #fff;
+}
+
+.plan-card h3 { color: #00f6ff; margin-bottom: 10px; }
+
+.plan-card button, .personal-workout button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #00f6ff, #00bcd4);
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.plan-card button:hover, .personal-workout button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #00f6ff;
+}
+
+.exercise-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+#workout-result {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(0, 246, 255, 0.05);
+    border: 1px dashed #00f6ff;
+    border-radius: 18px;
+}
+
+ul { list-style: none; padding: 0; }
+li {
+    background: rgba(255,255,255,0.1);
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 10px;
+    border-right: 4px solid #ff00ff;
+}
+</style>
+</head>
+<body>
+
+<div class="container-workout">
+    <div style="text-align: left; margin-bottom: 20px;">
+        <a href="dashboard.html" style="display: inline-block; color: #00f6ff; text-decoration: none; font-size: 0.9em; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid rgba(0,246,255,0.3); padding: 8px 16px; border-radius: 12px; background: rgba(0,246,255,0.05); transition: 0.3s;">&larr; Command Dashboard</a>
+    </div>
+
+    <h1 class="module-title">Workout & Traning</h1>
+
+    <div class="workout-plans">
+        <h2>Choose Your plan</h2>
+        <div id="plan-status-msg" style="text-align: center; margin-bottom: 15px; font-weight: 600; min-height: 24px; color: #00f6ff;"></div>
+        <div class="plan-cards">
+            <div class="plan-card" data-plan="Rank E: Novice">
+                <h3>beginner</h3>
+                <p>Lay the foundation. Build core stability and master the basics.</p>
+                <button onclick="selectPlan('Rank E: Novice', 'Lay the foundation. Build core stability and master the basics.')">select plan</button>
+            </div>
+            <div class="plan-card" data-plan="Rank C: Warrior">
+                <h3>intermediate</h3>
+                <p>Intense conditioning. Break your limits and forge iron strength.</p>
+                <button onclick="selectPlan('Rank C: Warrior', 'Intense conditioning. Break your limits and forge iron strength.')">select plan</button>
+            </div>
+            <div class="plan-card" data-plan="Rank S: Titan">
+                <h3>Advanced</h3>
+                <p>Extreme hypertrophy. Maximum load for absolute physical dominance.</p>
+                <button onclick="selectPlan('Rank S: Titan', 'Extreme hypertrophy. Maximum load for absolute physical dominance.')">select plan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="exercise-library">
+        <h2>Workouts</h2>
+        <div class="exercise-cards" id="exercise-cards">
+        </div>
+    </div>
+
+    <div class="personal-workout" style="text-align: center; margin-top: 50px;">
+        <h2>Workout Generator</h2>
+        <p>System will analyze your rank and generate a high-intensity routine.</p>
+        <button onclick="generateWorkout()">Generate</button>
+        <div id="workout-result"></div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+<script>
+// Check Authentication on load
+if (!window.GymApi || !GymApi.isAuthenticated()) {
+    window.location.href = 'index.html';
+}
+
+// Exercise library data with more "powerful" naming
+const exercises = [
+    {name: "Pushups", img: "push.jpeg"},
+    {name: "Squats", img: "squats.jpeg"},
+    {name: "Plank", img: "plank.jpeg"},
+    {name: "Lunges", img: "lunge.jpeg"},
+    {name: "Burpees", img: "bur.jpeg"}
+];
+
+// Load exercises
+const exerciseContainer = document.getElementById('exercise-cards');
+exercises.forEach(ex => {
+    const card = document.createElement('div');
+    card.className = 'exercise-card';
+    card.innerHTML = `<img src="${ex.img}" alt="${ex.name}"><p style="font-weight:600; color:#00f6ff;">${ex.name}</p>`;
+    exerciseContainer.appendChild(card);
+});
+
+let selectedPlan = "";
+
+function highlightActivePlan(planName) {
+    const cards = document.querySelectorAll('.plan-card');
+    cards.forEach(card => {
+        const cardPlan = card.getAttribute('data-plan');
+        const btn = card.querySelector('button');
+        if (cardPlan && cardPlan.toLowerCase() === planName.toLowerCase()) {
+            card.classList.add('active-plan');
+            if (btn) btn.textContent = 'ACTIVE PROTOCOL';
+        } else {
+            card.classList.remove('active-plan');
+            if (btn) btn.textContent = 'SELECT PLAN';
+        }
+    });
+}
+
+// Load saved workout plan from backend
+async function loadSavedPlan() {
+    const statusMsg = document.getElementById('plan-status-msg');
+    try {
+        const plan = await GymApi.getWorkoutPlan();
+        if (plan && plan.planName) {
+            selectedPlan = plan.planName;
+            highlightActivePlan(plan.planName);
+            statusMsg.textContent = `[CURRENT PROTOCOL]: ${plan.planName} (Active)`;
+        }
+    } catch (err) {
+        console.warn('Could not load workout plan:', err);
+    }
+}
+
+async function selectPlan(plan, description = ''){
+    const statusMsg = document.getElementById('plan-status-msg');
+    statusMsg.style.color = '#00f6ff';
+    statusMsg.textContent = `[SYNCING]: Synchronizing ${plan} Protocol with server...`;
+
+    try {
+        const saved = await GymApi.saveWorkoutPlan(plan, description);
+        if (saved) {
+            selectedPlan = saved.planName;
+            highlightActivePlan(saved.planName);
+            statusMsg.style.color = '#00f6ff';
+            statusMsg.textContent = `[SYSTEM]: ${saved.planName} Protocol Synchronized & Saved!`;
+            setTimeout(() => {
+                statusMsg.textContent = `[CURRENT PROTOCOL]: ${saved.planName} (Active)`;
+            }, 3000);
+        }
+    } catch (err) {
+        statusMsg.style.color = '#ff0055';
+        statusMsg.textContent = `[ERROR]: Failed to save plan: ${err.message || 'Server error'}`;
+    }
+}
+
+function generateWorkout(){
+    if(!selectedPlan){
+        alert("[ERROR]: Select a Training Rank before initiating daily quest!");
+        return;
+    }
+
+    let routineConfig;
+    const planLower = selectedPlan.toLowerCase();
+
+    if (planLower.includes("novice") || planLower.includes("beginner") || planLower.includes("rank e")) {
+        routineConfig = {
+            level: "Novice Protocol (Foundations)",
+            exercises: [
+                { name: "Pushups", prescription: "3 Sets x 10 Reps &bull; Focus on controlled tempo" },
+                { name: "Squats", prescription: "3 Sets x 12 Reps &bull; Full depth and knee alignment" },
+                { name: "Plank", prescription: "3 Sets x 30s Hold &bull; Core contraction" }
+            ],
+            rest: "60-75s rest between sets. Priority: Technique over speed.",
+            note: "Rule-Based System Calibration: Standard Foundation Profile"
+        };
+    } else if (planLower.includes("warrior") || planLower.includes("intermediate") || planLower.includes("rank c")) {
+        routineConfig = {
+            level: "Warrior Protocol (Conditioning)",
+            exercises: [
+                { name: "Burpees", prescription: "4 Sets x 12 Reps &bull; Explosive push-off" },
+                { name: "Lunges", prescription: "4 Sets x 12 Reps/leg &bull; Strict upright torso" },
+                { name: "Pushups", prescription: "4 Sets x 15 Reps &bull; Chest to floor" },
+                { name: "Plank", prescription: "4 Sets x 45s Hold &bull; Active abdominal bracing" }
+            ],
+            rest: "45s rest between sets. Priority: High intensity & cardiovascular output.",
+            note: "Rule-Based System Calibration: Enhanced Conditioning Profile"
+        };
+    } else {
+        routineConfig = {
+            level: "Titan Protocol (Hypertrophy & Failure)",
+            exercises: [
+                { name: "Pushups", prescription: "5 Sets to Mechanical Failure &bull; Deficit tempo" },
+                { name: "Squats", prescription: "5 Sets x 20 Reps &bull; Continuous tension" },
+                { name: "Burpees", prescription: "5 Sets x 15 Reps &bull; Maximum velocity" },
+                { name: "Lunges", prescription: "4 Sets x 16 Reps/leg &bull; Heavy burn" },
+                { name: "Plank", prescription: "4 Sets x 60s Hold &bull; Peak isometric tension" }
+            ],
+            rest: "90s rest between sets. Priority: Overload, failure, and physical resilience.",
+            note: "Rule-Based System Calibration: Advanced Hypertrophy Profile"
+        };
+    }
+
+    const resultDiv = document.getElementById('workout-result');
+    resultDiv.innerHTML = `
+        <h3 style="color:#ff00ff; margin-bottom:10px;">Quest Active: ${selectedPlan}</h3>
+        <p style="color:#00f6ff; font-size:0.9em; margin-bottom:15px; font-weight:600;">${routineConfig.level} &bull; ${routineConfig.note}</p>
+        <ul>` +
+        routineConfig.exercises.map(ex => `<li><span style="color:#00f6ff;">▶</span> <strong>${ex.name}</strong> &mdash; <span style="color:#ddd;">${ex.prescription}</span></li>`).join('') +
+        `</ul>
+        <p style="margin-top:15px; font-style:italic; color:#ccc;">${routineConfig.rest}</p>
+        <p style="margin-top:10px; font-size:0.82em; color:#00f6ff; letter-spacing:0.5px;">⚡ Suggestion only; not medical advice. Consult a fitness professional.</p>`;
+}
+
+// Initial plan load
+loadSavedPlan();
+</script>
+
+</body>
+</html>

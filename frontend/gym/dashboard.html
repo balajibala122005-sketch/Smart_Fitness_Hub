@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Hub - Command Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* DASHBOARD LOADER */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #0f2027, #000);
+    display: flex;
+    flex-direction: column;    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader-ring {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 6px solid rgba(255,255,255,0.1);
+    border-top: 6px solid #00f6ff;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 35px rgba(0,246,255,0.9);
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+#loader h3 {
+    margin-top: 20px;
+    letter-spacing: 4px;
+    color: #00f6ff;
+    text-shadow: 0 0 15px #00f6ff;
+    text-transform: uppercase;
+}
+
+/* SMOOTH PAGE REVEAL */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.95)),
+                url('hi.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+body.loaded { opacity: 1; }
+
+/* TITLE & SYSTEM STATUS */
+h1 {
+    margin-top: 50px;
+    font-size: 2.8em;
+    letter-spacing: 4px;
+    color: #00f6ff;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(0,246,255,0.6);
+    animation: titleFloat 4s ease-in-out infinite;
+}
+
+@keyframes titleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.system-status {
+    color: #ff00ff;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+/* NAV CONTAINER */
+.dashboard-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+    width: 90%;
+    max-width: 1000px;
+    margin-top: 20px;
+}
+
+/* BUTTON CARDS */
+.nav-btn {
+    padding: 40px 25px;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0,246,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: 0.5s;
+}
+
+.nav-btn:hover::before { left: 100%; }
+
+.nav-btn:hover {
+    transform: translateY(-12px);
+    background: linear-gradient(135deg, #00f6ff, #00bcd4);
+    color: #000;
+    border-color: #fff;
+    box-shadow: 0 15px 45px rgba(0,246,255,0.5);
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+    margin: 60px 0 40px;
+    padding: 15px 40px;
+    border-radius: 18px;
+    background: transparent;
+    color: #ff0055;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border: 2px solid #ff0055;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: #ff0055;
+    color: #fff;
+    box-shadow: 0 0 30px #ff0055;
+    transform: scale(1.05);
+}
+
+/* STATS PANEL */
+.stats-panel {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 90%;
+    max-width: 1000px;
+    margin-bottom: 25px;
+}
+.stat-card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(0,246,255,0.25);
+    padding: 15px 20px;
+    border-radius: 18px;
+    text-align: center;
+    min-width: 140px;
+    flex: 1 1 140px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+.stat-card:hover {
+    border-color: #00f6ff;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,246,255,0.3);
+}
+.stat-label {
+    display: block;
+    font-size: 0.72em;
+    letter-spacing: 2px;
+    color: #ff00ff;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.stat-value {
+    display: block;
+    font-size: 1.15em;
+    font-weight: 800;
+    color: #00f6ff;
+    letter-spacing: 1px;
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px){
+    h1 { font-size: 1.8em; }
+    .dashboard-nav { grid-template-columns: 1fr; }
+    .stats-panel { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="loader-ring"></div>
+    <h3>SYSTEM ACCESS</h3>
+    <p>STAY STRONG</p>
+</div>
+
+<h1 id="welcome-text">ACCESS GRANTED</h1>
+<div class="system-status" id="user-role">SYSTEM STATUS: OPTIMAL</div>
+
+<!-- USER BIOMETRIC & DASHBOARD STATS -->
+<div id="stats-panel" class="stats-panel">
+    <div class="stat-card">
+        <span class="stat-label">HEIGHT</span>
+        <span class="stat-value" id="stat-height">-- cm</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">WEIGHT</span>
+        <span class="stat-value" id="stat-weight">-- kg</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">BMI STATUS</span>
+        <span class="stat-value" id="stat-bmi">--</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">GOAL</span>
+        <span class="stat-value" id="stat-goal">--</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">ACTIVE PLAN</span>
+        <span class="stat-value" id="stat-plan">--</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">WORKOUTS</span>
+        <span class="stat-value" id="stat-workouts">0</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">CALORIES TODAY</span>
+        <span class="stat-value" id="stat-calories">0 kcal</span>
+    </div>
+</div>
+
+<div class="dashboard-nav">
+    <button class="nav-btn" onclick="openModule('workout.html')">Workout & Training</button>
+    <button class="nav-btn" onclick="openModule('diet.html')">diet & Nutrition</button>
+    <button class="nav-btn" onclick="openModule('progress.html')">progress tracking</button>
+    <button class="nav-btn" onclick="openModule('store.html')">suppliments & store</button>
+    <button class="nav-btn" onclick="openModule('chatbot.html')">ai fitness chatbot</button>
+</div>
+
+<button class="logout-btn" onclick="logout()">LOG OUT</button>
+
+<script src="script.js"></script>
+<script>
+// Authentication Check via GymApi
+if (window.GymApi && GymApi.isAuthenticated()) {
+    const user = GymApi.getUser();
+    document.getElementById('welcome-text').textContent = `Welcome, ${user.name}`;
+    document.getElementById('user-role').textContent = `RANK: ${user.role} | STATUS: ACTIVE`;
+
+    // Fetch comprehensive dashboard summary from backend API
+    GymApi.getDashboardSummary().then(summary => {
+        if (summary) {
+            document.getElementById('welcome-text').textContent = `Welcome, ${summary.name}`;
+            document.getElementById('user-role').textContent = `RANK: ${summary.role} | STATUS: ACTIVE`;
+
+            // Populate biometric stats
+            document.getElementById('stat-height').textContent = summary.height ? `${summary.height} cm` : 'N/A';
+            document.getElementById('stat-weight').textContent = summary.weight ? `${summary.weight} kg` : 'N/A';
+            document.getElementById('stat-bmi').textContent = summary.bmi ? `${summary.bmi} (${summary.bmiStatus})` : (summary.bmiStatus || 'N/A');
+            document.getElementById('stat-goal').textContent = summary.fitnessGoal ? summary.fitnessGoal.toUpperCase().replace('_', ' ') : 'N/A';
+            document.getElementById('stat-plan').textContent = summary.activePlan || 'Rank E: Novice';
+            document.getElementById('stat-workouts').textContent = summary.totalWorkouts != null ? summary.totalWorkouts : 0;
+            document.getElementById('stat-calories').textContent = summary.todayCalories != null ? `${summary.todayCalories} kcal` : '0 kcal';
+
+            // Update cached session info
+            GymApi.saveSession(null, summary);
+        }
+    }).catch(err => {
+        if (err && err.status === 401) {
+            GymApi.logout();
+        } else {
+            console.warn('Could not load dashboard summary:', err.message);
+        }
+    });
+} else {
+    window.location.href = 'index.html';
+}
+
+function openModule(url){
+    // Simulate system sound or delay if needed
+    window.open(url, '_blank');
+}
+
+function logout(){
+    if (window.GymApi) {
+        GymApi.logout();
+    } else {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+}
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        document.getElementById("loader").style.display = "none";
+        document.body.classList.add("loaded");
+    }, 1800);
+});
+</script>
+
+</body>
+</html>

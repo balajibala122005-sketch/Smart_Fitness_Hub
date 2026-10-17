@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gym Hub Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(rgba(0,0,0,.85),rgba(0,0,0,.95)),
+               url('hi.jpg') center/cover fixed;
+    color:#fff;
+    padding:40px 0;
+}
+.container{max-width:1200px;margin:auto;text-align:center}
+h1{color:#00f6ff;text-shadow:0 0 25px #00f6ff}
+
+.section{
+    background:rgba(255,255,255,.07);
+    backdrop-filter:blur(16px);
+    padding:35px;
+    border-radius:25px;
+    margin:50px 0;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:30px;
+}
+
+.card{
+    background:rgba(255,255,255,.05);
+    padding:20px;
+    border-radius:18px;
+    transition:.3s;
+}
+.card:hover{transform:translateY(-6px)}
+
+.card img{
+    width:100%;
+    height:170px;
+    object-fit:cover;
+    border-radius:12px;
+}
+
+button{
+    padding:10px 15px;
+    margin-top:8px;
+    border:none;
+    border-radius:10px;
+    background:#00f6ff;
+    font-weight:700;
+    cursor:pointer;
+}
+.wish-btn{background:#ff3d81;color:#fff}
+
+.list-box{
+    max-width:500px;
+    margin:auto;
+    text-align:left;
+}
+
+.list-box ul{list-style:none;padding:0}
+.list-box li{
+    display:flex;
+    justify-content:space-between;
+    padding:8px;
+    border-bottom:1px solid rgba(255,255,255,.2);
+}
+
+.place-btn{
+    width:100%;
+    margin-top:15px;
+    padding:14px;
+}
+
+/* Top Wishlist Icon */
+#topbar{
+    position:fixed;
+    top:20px;
+    right:20px;
+}
+#wishlist-btn{
+    background:#ff3d81;
+    color:#fff;
+    font-size:18px;
+    border:none;
+    border-radius:50%;
+    padding:12px 16px;
+    cursor:pointer;
+    box-shadow:0 0 15px #ff3d81;
+}
+</style>
+</head>
+
+<body>
+
+<div id="topbar">
+    <button id="wishlist-btn">❤️</button>
+</div>
+
+<div class="container">
+<h1>GYM HUB STORE</h1>
+
+<div class="section">
+<h2>Supplements</h2>
+<div id="supplements" class="grid"></div>
+</div>
+
+<div class="section">
+<h2>Gym Equipment</h2>
+<div id="equipment" class="grid"></div>
+</div>
+
+<div class="section list-box">
+<h3>🛒 Cart</h3>
+<ul id="cart"></ul>
+<button class="place-btn" onclick="placeOrder()">Place Order</button>
+</div>
+
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+const supplements=[
+{id:1,name:'Whey Protein',price:2500,img:'whey.jpeg'},
+{id:2,name:'Creatine',price:1200,img:'creatine.jpg'},
+{id:3,name:'Multivitamin',price:800,img:'mv.jpeg'}
+];
+
+const equipment=[
+{id:101,name:'Dumbbells',price:1500,img:'db.jpeg'},
+{id:102,name:'Yoga Mat',price:500,img:'yoga.jpeg'},
+{id:103,name:'Resistance Band',price:700,img:'band.jpeg'}
+];
+
+let cart = JSON.parse(localStorage.getItem("gymCart")) || [];
+let wishlist = JSON.parse(localStorage.getItem("gymWishlist")) || [];
+
+/* ---------- RENDER ---------- */
+function renderProducts(items, containerId){
+    const box = document.getElementById(containerId);
+    box.innerHTML='';
+    items.forEach(p=>{
+        box.innerHTML+=`
+        <div class="card">
+            <img src="${p.img}">
+            <h3>${p.name}</h3>
+            <p>₹${p.price}</p>
+            <button onclick="addCart(${p.id})">Add Cart</button>
+            <button class="wish-btn" onclick="addWishlist(${p.id})">Wishlist</button>
+        </div>`;
+    });
+}
+
+function renderCart(){
+    const ul=document.getElementById("cart");
+    ul.innerHTML='';
+    cart.forEach((i,index)=>{
+        ul.innerHTML+=`
+        <li>${i.name} - ₹${i.price}
+        <span style="cursor:pointer;color:red" onclick="removeCart(${index})">❌</span>
+        </li>`;
+    });
+}
+
+/* ---------- CART ---------- */
+function addCart(id){
+    const product = [...supplements,...equipment].find(p=>p.id===id);
+    cart.push(product);
+    localStorage.setItem("gymCart",JSON.stringify(cart));
+    renderCart();
+}
+
+function removeCart(index){
+    cart.splice(index,1);
+    localStorage.setItem("gymCart",JSON.stringify(cart));
+    renderCart();
+}
+
+/* ---------- WISHLIST ---------- */
+function addWishlist(id){
+    const product = [...supplements,...equipment].find(p=>p.id===id);
+    if(!wishlist.some(p=>p.id===id)){
+        wishlist.push(product);
+        localStorage.setItem("gymWishlist",JSON.stringify(wishlist));
+        alert("Added to wishlist");
+    }else{
+        alert("Already in wishlist");
+    }
+}
+
+/* ---------- ORDER ---------- */
+function placeOrder(){
+    if(cart.length===0){
+        alert("Cart is empty");
+        return;
+    }
+    window.location.href="payment-method.html";
+}
+
+/* ---------- INIT ---------- */
+renderProducts(supplements,'supplements');
+renderProducts(equipment,'equipment');
+renderCart();
+
+document.getElementById("wishlist-btn").onclick=()=>{
+    window.location.href="wishlist.html";
+};
+</script>
+
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Hub - System Initialization</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- FULLSCREEN LOADER ---------- */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #0f2027, #000);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader-ring {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 6px solid rgba(255,255,255,0.1);
+    border-top: 6px solid #00f6ff;
+    box-shadow: 0 0 35px rgba(0,246,255,0.9);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+#loader h3 {
+    margin-top: 20px;
+    color: #00f6ff;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px #00f6ff;
+}
+
+/* ---------- BODY & BACKGROUND ---------- */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)),
+                url("https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=1600&q=80");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+body.loaded { opacity: 1; }
+
+/* ---------- CONTAINER ---------- */
+.container {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(25px);
+    padding: 40px;
+    border-radius: 28px;
+    width: 400px;
+    border: 1px solid rgba(0,246,255,0.25);
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    animation: slideUp 1s ease forwards;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+    letter-spacing: 2px;
+    color: #00f6ff;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px #00f6ff;
+}
+
+/* ---------- INPUTS & SELECTS ---------- */
+input, select {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    font-size: 0.95em;
+    transition: 0.3s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #ff00ff;
+    box-shadow: 0 0 15px rgba(255,0,255,0.5);
+}
+
+option { background: #000; color: #fff; }
+
+/* ---------- ACTION BUTTON ---------- */
+button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #00f6ff, #00bcd4);
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,246,255,0.5);
+    transition: 0.4s ease;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 35px #00f6ff;
+}
+
+/* ---------- TOGGLE TEXT ---------- */
+p {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.85em;
+    color: #ccc;
+}
+
+span {
+    color: #ff00ff;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+span:hover { text-shadow: 0 0 10px #ff00ff; }
+</style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="loader-ring"></div>
+    <h3>INITIALIZING UNIT</h3>
+    <p>STAY STRONG...</p>
+</div>
+
+<div class="container">
+    <div id="login-form">
+        <h2>login</h2>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="ENTER EMAIL" required>
+            <input type="password" id="loginPassword" placeholder="ENTER PASSWORD" required>
+            <select id="loginRole" required>
+                <option value="">SELECT</option>
+                <option value="user">USER</option>
+                <option value="trainer">TRAINER</option>
+                <option value="admin">SADMIN</option>
+            </select>
+            <button type="submit">submit</button>
+            <p>Don't have an account? <span onclick="toggleForm()">Register New ID</span></p>
+        </form>
+    </div>
+
+    <div id="register-form" style="display:none;">
+        <h2>Bio-Registration</h2>
+        <form id="registerForm">
+            <input type="text" id="regName" placeholder="FULL NAME" required>
+            <input type="email" id="regEmail" placeholder="EMAIL" required>
+            <input type="password" id="regPassword" placeholder="PASSWORD" required>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="regAge" placeholder="AGE" required>
+                <input type="number" id="regHeight" placeholder="HT (CM)" required>
+                <input type="number" id="regWeight" placeholder="WT (KG)" required>
+            </div>
+            <select id="regGoal" required>
+                <option value="">SELECT</option>
+                <option value="muscle">MUSCLE GAIN</option>
+                <option value="weight_loss">WEIGHT LOSS</option>
+            </select>
+            <select id="regRole" required>
+                <option value="">CLEARANCE LEVEL</option>
+                <option value="user">USER</option>
+                <option value="trainer">TRAINER</option>
+            </select>
+            <button type="submit">Submit</button>
+            <p>ID already exists? <span onclick="toggleForm()">LOGIN</span></p>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+const loginFormDiv = document.getElementById('login-form');
+const registerFormDiv = document.getElementById('register-form');
+
+function toggleForm() {
+    if (loginFormDiv.style.display === 'none') {
+        loginFormDiv.style.display = 'block';
+        registerFormDiv.style.display = 'none';
+    } else {
+        loginFormDiv.style.display = 'none';
+        registerFormDiv.style.display = 'block';
+    }
+}
+
+// Register Form Handler
+document.getElementById('registerForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+
+    // Prevent duplicate submission
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'TRANSMITTING...';
+
+    const userData = {
+        name: document.getElementById('regName').value,
+        email: document.getElementById('regEmail').value,
+        password: document.getElementById('regPassword').value,
+        age: document.getElementById('regAge').value,
+        height: document.getElementById('regHeight').value,
+        weight: document.getElementById('regWeight').value,
+        goal: document.getElementById('regGoal').value,
+        role: document.getElementById('regRole').value
+    };
+
+    try {
+        const response = await GymApi.register(userData);
+        alert('[SYSTEM]: Bio-Registration successful. Proceed to Link.');
+        document.getElementById('registerForm').reset();
+        toggleForm();
+    } catch (err) {
+        alert('[ERROR]: ' + (err.message || 'Registration failed'));
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+});
+
+// Login Form Handler
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+
+    // Prevent duplicate submission
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'AUTHENTICATING...';
+
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const role = document.getElementById('loginRole').value;
+
+    try {
+        const result = await GymApi.login(email, password, role);
+        alert(`[SYSTEM]: Access granted, ${result.user.name}. Loading Training Arc.`);
+        window.location.href = 'dashboard.html';
+    } catch (err) {
+        alert('[ACCESS DENIED]: ' + (err.message || 'Invalid credentials or clearance level.'));
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+});
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        document.getElementById("loader").style.display = "none";
+        document.body.classList.add("loaded");
+    }, 1800);
+});
+</script>
+</body>
+</html>
